@@ -3,11 +3,11 @@ import { useHistory } from "react-router-dom";
 
 const Create = () => {
     // form states
-    const [name, setName] = useState('Michael Carter');
-    const [emailAddress, setEmailAddress] = useState('michaelcarteryork@gmail.com');
-    const [aboutYou, setAboutYou] = useState('I am a web developer with over 20 years experience across a range of IT roles. I am seeking full time work and my primary focus is front end development. I am based in York and am looking for work either home based or in the York area.');
-    const [applyingReason, setApplyingReason] = useState('Sifting through the numerous front end jobs, this one really stood out. There was a clear skills match and discussions have led me to feel I could be challenged but be able to a very valuable developer.');
-    const [paversKnowledge, setPaversKnowledge] = useState('Prior knowledge frankly only that they are a footwear retailer. After speaking with James though, I learnt more about the culture of the company and working environment and this is something I would love to be part of.');
+    const [name, setName] = useState('');
+    const [emailAddress, setEmailAddress] = useState('');
+    const [aboutYou, setAboutYou] = useState('');
+    const [applyingReason, setApplyingReason] = useState('');
+    const [paversKnowledge, setPaversKnowledge] = useState('');
     const [fileUploadedObject, setFileUploadedObject] = useState('');
 
     // pending state to determine which button to show
@@ -130,7 +130,6 @@ const Create = () => {
                 <textarea 
                     required 
                     value = {applyingReason}
-                    placeholder = 'Test'
                     maxLength = {255}
                     onChange = { (e) => setApplyingReason(e.target.value) }
                 />
