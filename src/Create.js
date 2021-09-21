@@ -3,20 +3,22 @@ import { useHistory } from "react-router-dom";
 
 const Create = () => {
     // form states
-    const [name, setName] = useState('test');
-    const [emailAddress, setEmailAddress] = useState('test');
-    const [aboutYou, setAboutYou] = useState('test');
-    const [applyingReason, setApplyingReason] = useState('test');
-    const [paversKnowledge, setPaversKnowledge] = useState('test');
+    const [name, setName] = useState('Michael Carter');
+    const [emailAddress, setEmailAddress] = useState('michaelcarteryork@gmail.com');
+    const [aboutYou, setAboutYou] = useState('I am a web developer with over 20 years experience across a range of IT roles. I am seeking full time work and my primary focus is front end development. I am based in York and am looking for work either home based or in the York area.');
+    const [applyingReason, setApplyingReason] = useState('Sifting through the numerous front end jobs, this one really stood out. There was a clear skills match and discussions have led me to feel I could be challenged but be able to a very valuable developer.');
+    const [paversKnowledge, setPaversKnowledge] = useState('Prior knowledge frankly only that they are a footwear retailer. After speaking with James though, I learnt more about the culture of the company and working environment and this is something I would love to be part of.');
+    const [fileUploadedObject, setFileUploadedObject] = useState('');
 
     // pending state to determine which button to show
     const [isPending, setIsPending] = useState(false);
 
-    // invoke the hook so after form submission we can go back to a specific page/mount home component
+    // invoke the useHistory hook so after form submission we can go back to a specific page/mount home component
     const history = useHistory();
+
     /*
-    now we have this object which represents history with several methods attached
-    eg. go forward, go back or redirect the user (which we will use)
+    function to handle submission
+    Note, this is the form submission not the image select function which is done direct within the select file
     */
     const handleSubmit = (e) => {
         setIsPending(true);
@@ -30,23 +32,58 @@ const Create = () => {
         const yearValue = date.getFullYear().toString();
         const dateFormatted = dateValue + '/' + monthValue + '/' + yearValue;
 
-        // Build json string
-        const lists = { name, emailAddress, dateFormatted, aboutYou, applyingReason, paversKnowledge  }
-        
-        // Convert lists object to string and log to console
-        console.log(JSON.stringify(lists));
+        // Build json string injecting state values from input form
+        const dataToSend = {
+            "mode": "formdata",
+            "formdata": [
+                {
+                    "key": "{applicantName}",
+                    "value": name,
+                    "type": "text"
+                },
+                {
+                    "key": "applicantEmail",
+                    "value": emailAddress,
+                    "type": "text"
+                },
+                {
+                    "key": "dateOfApplication",
+                    "value": dateFormatted,
+                    "type": "text"
+                },
+                {
+                    "key": "aboutYou",
+                    "value": aboutYou,
+                    "type": "text"
+                },
+                {
+                    "key": "reasonForApplying",
+                    "value": applyingReason,
+                    "type": "text"
+                },
+                {
+                    "key": "whatYouKnowAboutPavers",
+                    "value": paversKnowledge,
+                    "type": "text"
+                },
+                {
+                    "key": "file",
+                    "type": "file",
+                    "src": [fileUploadedObject]
+                }
+            ]
+        }
 
         // Upload form
-        fetch('http://localhost:8000/body', {
+        fetch('https://staging.interview-api.paversdev.co.uk/upload', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(lists),
+            body: JSON.stringify(dataToSend),
         })
         .then(response => {
             response.json();
-            // display the response
             console.log('Response:', response);
         })
         .then(data => {
@@ -59,8 +96,8 @@ const Create = () => {
         .catch((error) => {
             console.error('Error:', error);
         });
-
     }
+    
     return ( 
         <div className="component create">
             <h2>Add a new entry</h2>
@@ -106,14 +143,17 @@ const Create = () => {
                 />
 
                 <label>Upload image:</label>
-                <input type="file" />
-                {/* 
-                Initially show Add entry button
-                Whilst adding, change this to Adding entry button
-                */} 
+                <input type="file" 
+                    onChange = { (e) => {
+                        const fileSelected = e.target.files[0];
+                        setFileUploadedObject(fileSelected);
+                    }
+                }
+                />
+                
                 {!isPending && <button>Add entry</button>}
                 {isPending && <button disabled>Adding entry...</button>}
-                <h3>Test state (should change as data added)</h3>
+                <h3>Test state (To demonstrate change as data added)</h3>
                 <p>Name: { name }</p>
                 <p>Email address: { emailAddress }</p>
                 <p>About you: { aboutYou }</p>
